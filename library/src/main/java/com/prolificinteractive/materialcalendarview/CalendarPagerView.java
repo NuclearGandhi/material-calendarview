@@ -2,6 +2,7 @@ package com.prolificinteractive.materialcalendarview;
 
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
@@ -15,11 +16,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.SHOW_DEFAULTS;
 import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.showOtherMonths;
 import static java.util.Calendar.DATE;
-import static java.util.Calendar.DAY_OF_WEEK;
 
 abstract class CalendarPagerView extends ViewGroup implements View.OnClickListener {
 
@@ -36,6 +37,7 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
     private CalendarDay minDate = null;
     private CalendarDay maxDate = null;
     private int firstDayOfWeek;
+    private boolean isRtl = false;
 
     private final Collection<DayView> dayViews = new ArrayList<>();
 
@@ -52,6 +54,9 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
 
         buildWeekDays(resetAndGetWorkingCalendar());
         buildDayViews(dayViews, resetAndGetWorkingCalendar());
+
+        String language = Locale.getDefault().getLanguage();
+        isRtl =  language.equals("iw") || language.equals("ar");
     }
 
     private void buildWeekDays(Calendar calendar) {
@@ -259,8 +264,11 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         final int count = getChildCount();
-
-        final int parentLeft = 0;
+        final int parentLeft;
+        if (isRtl)
+            parentLeft = getMeasuredWidth();
+        else
+            parentLeft = 0;
 
         int childTop = 0;
         int childLeft = parentLeft;
@@ -271,9 +279,15 @@ abstract class CalendarPagerView extends ViewGroup implements View.OnClickListen
             final int width = child.getMeasuredWidth();
             final int height = child.getMeasuredHeight();
 
-            child.layout(childLeft, childTop, childLeft + width, childTop + height);
+            if (isRtl)
+                child.layout(childLeft- width, childTop, childLeft, childTop + height);
+            else
+                child.layout(childLeft, childTop, childLeft + width, childTop + height);
 
-            childLeft += width;
+            if (isRtl)
+                childLeft -= width;
+            else
+                childLeft += width;
 
             //We should warp every so many children
             if (i % DEFAULT_DAYS_IN_WEEK == (DEFAULT_DAYS_IN_WEEK - 1)) {

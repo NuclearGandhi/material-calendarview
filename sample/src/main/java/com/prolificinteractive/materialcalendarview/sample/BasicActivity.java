@@ -1,5 +1,7 @@
 package com.prolificinteractive.materialcalendarview.sample;
 
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +15,7 @@ import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,6 +35,16 @@ public class BasicActivity extends AppCompatActivity implements OnDateSelectedLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Locale locale = new Locale("iw");
+        Locale.setDefault(locale);
+        Configuration config = getResources().getConfiguration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            config.setLocale(locale);
+        }
+        getBaseContext().getResources().updateConfiguration(config,
+                getBaseContext().getResources().getDisplayMetrics());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic);
         ButterKnife.bind(this);
