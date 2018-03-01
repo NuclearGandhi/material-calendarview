@@ -1,13 +1,14 @@
 package com.prolificinteractive.materialcalendarview;
 
 import android.content.Context;
-import android.support.v4.view.BetterViewPager;
 import android.view.MotionEvent;
+
+import com.duolingo.open.rtlviewpager.RtlViewPager;
 
 /**
  * Custom ViewPager that allows swiping to be disabled.
  */
-class CalendarPager extends BetterViewPager {
+class CalendarPager extends RtlViewPager {
 
     private boolean pagingEnabled = true;
 

@@ -268,7 +268,7 @@ public class MaterialCalendarView extends ViewGroup {
         titleChanger.setTitleFormatter(DEFAULT_TITLE_FORMATTER);
 
         pager.setOnPageChangeListener(pageChangeListener);
-        pager.setPageTransformer(false, new ViewPager.PageTransformer() {
+        pager.setPageTransformer(true, new ViewPager.PageTransformer() {
             @Override
             public void transformPage(View page, float position) {
                 position = (float) Math.sqrt(1 - Math.abs(position));
